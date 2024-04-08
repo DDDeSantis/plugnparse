@@ -1,0 +1,19 @@
+[run]
+branch = True
+data_file = ./artifacts/coverage_report/.coverage
+omit = ./src/tests/*
+source = ./src/plugnparse/
+
+[report]
+include = ./src/plugnparse/*
+ignore_errors = True
+
+[html]
+directory = ./artifacts/coverage_report/html
+
+[json]
+output = ./artifacts/coverage_report/.coverage.html
+pretty_print = False
+
+[xml]
+output = ./artifacts/coverage_report/.coverage.xml
