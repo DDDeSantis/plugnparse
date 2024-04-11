@@ -1,5 +1,4 @@
 # --- external imports ---
-import copy
 from enum import Enum
 from typing import List, Optional, Type, Union, Any
 import importlib
@@ -13,11 +12,11 @@ generic_parsable_type = "parsable_type"
 generic_parsable_module = "parsable_module"
 
 
-def required_parameter_for_class_init(class_type: type) -> List[str]:
+def required_parameter_for_class_init(class_type: Type[Any]) -> List[str]:
     """Returns the required parameter names for initializing the provided class type.
 
     Args:
-        class_type: type
+        class_type: Type[Any]
             The class type in which to inspect.
 
     Returns:
@@ -35,40 +34,50 @@ def required_parameter_for_class_init(class_type: type) -> List[str]:
     return list(required_args)
 
 
-def get_all_properties(obj: Any, more_properties: dict) -> dict:
-    more_properties.update(obj.__dict__)
-    for base in obj.__bases__:
+def get_all_properties(class_type: Type[Any], more_properties: dict) -> dict:
+    """Gets all
+
+    Args:
+        class_type: Type[Any]
+
+        more_properties:
+
+    Returns:
+
+    """
+    more_properties.update(class_type.__dict__)
+    for base in class_type.__bases__:
         more_properties = get_all_properties(base, more_properties)
     return more_properties
 
 
-def is_property(obj: Any, key: str) -> bool:
-    if not isinstance(obj, type):
-        obj = type(obj)
-    pro = get_all_properties(obj, dict()).get(key)
+def is_property(class_type: Type[Any], key: str) -> bool:
+    if not isinstance(class_type, type):
+        class_type = type(class_type)
+    pro = get_all_properties(class_type, dict()).get(key)
     return isinstance(pro, property)
 
 
-def get_property(obj, key: str) -> property:
-    if not isinstance(obj, type):
-        obj = type(obj)
-    pro = get_all_properties(obj, dict()).get(key)
+def get_property(class_type: Type[Any], key: str) -> property:
+    if not isinstance(class_type, type):
+        class_type = type(class_type)
+    pro = get_all_properties(class_type, dict()).get(key)
     if not isinstance(pro, property):
-        logger.log_and_raise(TypeError, '{.__name__}.{} is not a property its a '.format(obj, key), type(pro),
-                             " and the object has ", get_all_properties(obj, dict()))
+        logger.log_and_raise(TypeError, '{.__name__}.{} is not a property its a '.format(class_type, key), type(pro),
+                             " and the object has ", get_all_properties(class_type, dict()))
     return pro
 
 
-def can_get(obj, key):
-    return get_property(obj, key).fget is not None
+def can_get(class_type: Type[Any], key):
+    return get_property(class_type, key).fget is not None
 
 
-def can_set(obj, key):
-    return get_property(obj, key).fset is not None
+def can_set(class_type: Type[Any], key):
+    return get_property(class_type, key).fset is not None
 
 
-def can_del(obj, key):
-    return get_property(obj, key).fdel is not None
+def can_del(class_type: Type[Any], key):
+    return get_property(class_type, key).fdel is not None
 
 
 def get_class_and_module_strings(input_value: dict,
