@@ -37,13 +37,6 @@ def equal(a: Any, b: Any, **kwargs) -> bool:
         return dicts_equal(a, b, **kwargs)
     elif isinstance(a, np.ndarray):
         return numpy_arrays_equal(a, b, **kwargs)
-    elif isinstance(a, (Path2D, Path3D)):
-        return equal(np.array(a.vertices), np.array(b.vertices), **kwargs)
-    elif isinstance(a, Polygon):
-        atol = kwargs.get("atol", None)
-        if atol:
-            return a.equals_exact(b, atol)
-        return a.equals(b)
     elif hasattr(a, 'equals'):
         # Catches our Parsable class (and a few others)
         return a.equals(b, **kwargs)

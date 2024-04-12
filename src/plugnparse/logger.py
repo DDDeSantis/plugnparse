@@ -1,7 +1,10 @@
 import inspect
 import logging
-from typing import Type, Optional, NoReturn
+from typing import Type, Optional, NoReturn, Union
 
+##########################################################################
+# Levels
+##########################################################################
 CRITICAL = logging.CRITICAL
 FATAL = logging.FATAL
 ERROR = logging.ERROR
@@ -12,20 +15,30 @@ DEBUG = logging.DEBUG
 NOTSET = logging.NOTSET
 
 
-def _create_logger(logger_name: str):
-    _logger = logging.getLogger(logger_name)
-    _logger.setLevel(logging.INFO)
-
+##########################################################################
+# Logger Methods
+##########################################################################
+def create_logger(logger_name: str) -> logging.Logger:
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.INFO)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-    return _logger
-
-
-__logger__ = _create_logger("mpaf")
+    return logger
 
 
-def get_logger():
-    return __logger__
+__logger__ = create_logger("default")  # The main logger
+
+
+def get_logger(logger_name: Optional[str]) -> logging.Logger:
+    if logger_name is None:
+        return __logger__
+    return logging.getLogger(logger_name)
+
+
+def set_logger(logger: Union[logging.Logger, str]):
+    if isinstance(logger, (logging.Logger, logging.LoggerAdapter)):
+        __logger__ = logger
+    else:
+        __logger__ = logging.getLogger(logger)
 
 
 def set_log_level(level: int):
@@ -39,6 +52,9 @@ def function_file_line(message: str, stack=inspect.stack()[0]):
     return _message
 
 
+##########################################################################
+# Logging Methods
+##########################################################################
 def log(*argv, level: int, record_location: bool = False, stack=inspect.stack()[1]) -> str:
     message = ""
     if not __logger__.isEnabledFor(level):
