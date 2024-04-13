@@ -1,5 +1,7 @@
 # --- external imports ---
 from __future__ import annotations
+
+import json
 from typing import List, Optional, Tuple, Union, Any, Sequence
 import numpy as np
 from pathlib import Path
@@ -392,7 +394,7 @@ class Parsable:
         for key, value in input_value.items():
             if isinstance(value, dict):
                 if properties.generic_parsable_type in value:
-                    parsed_items[key] = properties.ParsableProperty.parse(value, throw_if_unable_to_parse=True)
+                    parsed_items[key] = properties.parse(value, throw_if_unable_to_parse=True)
                 else:
                     parsed_items[key] = value
             elif isinstance(value, list):
@@ -400,7 +402,7 @@ class Parsable:
                 for item in value:
                     if isinstance(item, dict):
                         if properties.generic_parsable_type in item:
-                            converted_items.append(properties.ParsableProperty.parse(item, throw_if_unable_to_parse=True))
+                            converted_items.append(properties.parse(item, throw_if_unable_to_parse=True))
                         else:
                             converted_items.append(item)
                     else:
@@ -428,7 +430,7 @@ class Parsable:
         for item in input_value:
             if isinstance(item, dict):
                 if properties.generic_parsable_type in item:
-                    parsed_items.append(properties.ParsableProperty.parse(item, throw_if_unable_to_parse=True))
+                    parsed_items.append(properties.parse(item, throw_if_unable_to_parse=True))
                 else:
                     parsed_items.append(item)
             elif isinstance(item, list):
@@ -436,7 +438,7 @@ class Parsable:
                 for entry in item:
                     if isinstance(entry, dict):
                         if properties.generic_parsable_type in entry:
-                            converted_items.append(properties.ParsableProperty.parse(entry, throw_if_unable_to_parse=True))
+                            converted_items.append(properties.parse(entry, throw_if_unable_to_parse=True))
                         else:
                             converted_items.append(entry)
                     else:
@@ -445,6 +447,31 @@ class Parsable:
             else:
                 parsed_items.append(item)
         return parsed_items
+
+    ##########################################################################
+    # Serialize/Deserialize To/From a String
+    ##########################################################################
+    def to_string(self, **kwargs) -> str:
+        """Converts a Parsable subclass to a JSON string.
+
+        Args:
+            **kwargs:
+                Optional keyword arguments to pass to the Parsable subclass.
+
+        Returns:
+            str:
+                The JSON representation of the Parsable subclass.
+        """
+        return io.to_json_string(self.to_dict(), **kwargs)
+
+    def from_string(self, json_string: str):
+        """Parses a JSON string into the Parsable subclass.
+
+        Args:
+            json_string: str
+                The JSON representation of the Parsable subclass.
+        """
+        self.from_dict(io.from_json_string(json_string))
 
     ##########################################################################
     # Serialize To a Dictionary
@@ -1023,7 +1050,7 @@ class Parsable:
                 document.
         """
         if isinstance(json_object, str):
-            json_object = io.from_json_str(json_object)
+            json_object = io.from_json_string(json_object)
         self.from_dict(json_object)
 
     def save_to_json(self, file_path: Union[str, Path], **kwargs) -> Path:
@@ -1058,7 +1085,7 @@ class Parsable:
         io.create_directories(file_dir)
 
         # --- write the json file ---
-        io.write_to_json_file(full_path, **kwargs)
+        io.write_to_json_file(full_path, self.to_dict(), **kwargs)
 
         return full_path
 
