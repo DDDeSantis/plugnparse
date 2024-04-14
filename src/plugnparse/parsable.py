@@ -1,7 +1,5 @@
 # --- external imports ---
 from __future__ import annotations
-
-import json
 from typing import List, Optional, Tuple, Union, Any, Sequence
 import numpy as np
 from pathlib import Path
@@ -11,7 +9,7 @@ from .equal import equal
 
 
 class Parsable:
-    """A class for generically parsing attributes of its subclass implementations.
+    """Represents a class capable of parsing attributes of its subclass implementations.
 
     Notes:
         The Parsable class automatically parses properties of its subclasses which follow a dedicated pattern.
@@ -1074,7 +1072,7 @@ class Parsable:
         # --- parse the file path ---
         path = io.to_path(file_path)
         if path.name == file_path:
-            logger.log_and_raise(RuntimeError,"The input file_path [", file_path, "] does not contain a directory.")
+            logger.log_and_raise(RuntimeError, "The input file_path [", file_path, "] does not contain a directory.")
 
         file_dir = path.parent
 
@@ -1103,7 +1101,7 @@ class Parsable:
         """
         # --- validate the file path ---
         if not io.file_exists(file_path):
-            logger.log_and_raise(RuntimeError,"The file path [", file_path, "] does not exist. Cannot load object.")
+            logger.log_and_raise(RuntimeError, "The file path [", file_path, "] does not exist. Cannot load object.")
 
         # --- read the json file ---
         json_object = io.read_json_file(file_path, **kwargs)

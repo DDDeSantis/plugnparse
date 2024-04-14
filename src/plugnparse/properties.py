@@ -7,7 +7,6 @@ import functools
 # --- local imports ---
 from . import logger
 
-
 generic_parsable_type = "parsable_type"
 generic_parsable_module = "parsable_module"
 
@@ -35,6 +34,25 @@ def required_parameter_for_class_init(class_type: Type[Any]) -> List[str]:
     for base in class_type.__bases__:
         required_args = required_args.union(set(required_parameter_for_class_init(base)))
     return list(required_args)
+
+
+def get_subclass_map(class_type: Type[Any], class_map: dict) -> dict:
+    """Returns the subclass map for the provided class type.
+
+    Args:
+        class_type: Type[Any]
+            The class type in which to inspect.
+        class_map: dict
+            The subclass map for the provided class type.
+
+    Returns:
+        dict:
+            The subclass map for the provided class type.
+    """
+    for subclass in class_type.__subclasses__():
+        class_map[subclass.__name__] = subclass
+        class_map = get_subclass_map(subclass, class_map)
+    return class_map
 
 
 def get_all_properties(class_type: Type[Any], more_properties: dict) -> dict:
@@ -415,6 +433,7 @@ def enum_setter(enum_type: Type[Enum]) -> Callable[[Any], Any]:
         Callable[[Any], Any]:
             The functor used to parse the given enum type when setting a property
     """
+
     def decorator_enum_setter(func):
         @functools.wraps(func)
         def wrapper(self, input_value):
@@ -453,6 +472,7 @@ def parsable_setter(parsable_module: Optional[str] = None,
         Callable[[Any], Any]:
             The functor used to parse the given class type when setting a property.
     """
+
     def decorator_parsable_setter(func):
         @functools.wraps(func)
         def parsable_parse(self, input_value):
