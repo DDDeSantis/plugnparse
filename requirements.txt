@@ -1,0 +1,13 @@
+# --- general tools ---
+setuptools>=68.2.2
+typing>=3.7.4.3
+
+# --- testing ---
+pytest>=8.1.1
+pyfakefs==5.3.5
+
+# --- data ---
+datetime~=5.5
+
+# --- basic data processing ---
+numpy>=1.26.4
