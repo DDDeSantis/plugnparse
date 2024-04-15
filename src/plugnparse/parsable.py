@@ -1,6 +1,6 @@
 # --- external imports ---
 from __future__ import annotations
-from typing import List, Optional, Tuple, Union, Any, Sequence
+from typing import List, Optional, Tuple, Union, Any, Sequence, Callable
 import numpy as np
 from pathlib import Path
 # --- local imports ---
@@ -215,11 +215,11 @@ class Parsable:
     # Decorators
     ##########################################################################
     @classmethod
-    def static_class_setter(cls):
+    def static_class_setter(cls) -> Callable[[Union[Parsable, dict]], Parsable]:
         """A decorator function that provides the class module and name to the module loader routine.
 
         Examples:
-            from mpaf.utilities.parsable import Parsable
+            from plugnparse.parsable import Parsable
 
             class Foo(Parsable):
                 def to_dict(self) -> dict:
@@ -273,7 +273,7 @@ class Parsable:
         """Splits the attributes between those that are to be parsed in a certain order and the rest of the attributes.
 
         Returns:
-            Tuple[List[str], List[str]]
+            Tuple[List[str], List[str]]:
                 The ordered and unordered attributes respectively.
 
         Raises:
@@ -382,7 +382,7 @@ class Parsable:
             input_value: dict
                 A dictionary of serialized keys mapping to the serialized dictionary representation of Parsable
                 subclasses. Vales that are not dictionaries or do not contain the key defined at
-                'mpaf.utilities.properties.generic_parsable_type' are placed into the output dictionary as is.
+                'plugnparse.properties.generic_parsable_type' are placed into the output dictionary as is.
 
         Returns:
             dict:
@@ -417,7 +417,7 @@ class Parsable:
         Args:
             input_value: list
                 A list of serialized dictionary representation of Parsable subclasses. Objects that are not dictionaries
-                or do not contain the key defined at 'mpaf.utilities.properties.generic_parsable_type' are placed into
+                or do not contain the key defined at 'plugnparse.properties.generic_parsable_type' are placed into
                 the output list as is.
 
         Returns:
@@ -909,7 +909,7 @@ class Parsable:
 
     def update_specialized_property(self, only_if_missing: bool, input_value: dict, property_name: str):
         """
-        Retrieves the attribute whose value is requires a specialized decoding function from the input dictionary
+        Retrieves the attribute whose value requires a specialized decoding function from the input dictionary
         and populates the desired attribute if desired.
 
         Args:
@@ -921,7 +921,8 @@ class Parsable:
                 The name of the attribute to populate.
 
         Raises:
-            AttributeError: If the Parsable subclass does not have a method named ''property_name'_decode'.
+            AttributeError: 
+                If the Parsable subclass does not have a method named ''property_name'_decode'.
         """
         if hasattr(self, property_name + '_decode'):
             if only_if_missing:
@@ -953,42 +954,7 @@ class Parsable:
         if type(self) != type(other):
             return False
 
-        for property_name in self._serializable_attributes:
-            self_value, other_value, equals = self.equals_property_name(other, property_name)
-            if equals:
-                continue
-            elif equals is False or not equal(self_value, other_value, **kwargs):
-                return False
-
-        for property_name in self._enum_attributes:
-            self_value, other_value, equals = self.equals_property_name(other, property_name)
-            if equals:
-                continue
-            elif equals is False or not equal(self_value, other_value, **kwargs):
-                return False
-
-        for property_name in self._parsable_attributes:
-            self_value, other_value, equals = self.equals_property_name(other, property_name)
-            if equals:
-                continue
-            elif equals is False or not equal(self_value, other_value, **kwargs):
-                return False
-
-        for property_name in self._dict_of_parsables:
-            self_value, other_value, equals = self.equals_property_name(other, property_name)
-            if equals:
-                continue
-            elif equals is False or not equal(self_value, other_value, **kwargs):
-                return False
-
-        for property_name in self._list_of_parsables:
-            self_value, other_value, equals = self.equals_property_name(other, property_name)
-            if equals:
-                continue
-            elif equals is False or not equal(self_value, other_value, **kwargs):
-                return False
-
-        for property_name in self._specialized_attributes:
+        for property_name in self.collect_all_attributes():
             self_value, other_value, equals = self.equals_property_name(other, property_name)
             if equals:
                 continue
@@ -998,7 +964,7 @@ class Parsable:
         return True
 
     def equals_property_name(self, other: Parsable, property_name: str) -> Tuple[Any, Any, Optional[bool]]:
-        """Check if self and other have a property and get the property if they do.
+        """Checks if self and other have a property and get the property if they do.
 
         Args:
             other: Parsable
@@ -1007,7 +973,7 @@ class Parsable:
                 The name of the property to check.
 
         Returns:
-            Tuple[Any, Any, Optional[bool]]
+            Tuple[Any, Any, Optional[bool]]:
                 The value of the properties from self + other (if both Parsables had the property) and if we can short
                 circuit the evaluation. If the third item in the tuple is not None, we don't need to compare the values.
         """
