@@ -3,10 +3,11 @@ from __future__ import annotations
 import pytest
 import numpy as np
 
-from plugnparse import equal, parsable
+from plugnparse import Parsable
+from plugnparse.equal import equal
 
 
-class TestParsable(parsable.Parsable):
+class TestParsable(Parsable):
     def __init__(self, value = None):
         super().__init__()
         self.value = value
@@ -40,18 +41,18 @@ class TestParsable(parsable.Parsable):
     (0.1, 0.2, {'atol': 0.1}, True),
     (0.3, 0.1, {'rtol': 1}, False),
     (0.1, 0.3, {'rtol': 1}, True),
-    (np.int(1), np.int(2), {}, False),
-    (np.int(1), np.int(1), {}, True),
-    (np.int(1), np.int(3), {'atol': 1}, False),
-    (np.int(1), np.int(2), {'atol': 1}, True),
-    (np.int(3), np.int(1), {'rtol': 1}, False),
-    (np.int(1), np.int(3), {'rtol': 1}, True),
-    (np.float(0.1), np.float(0.2), {}, False),
-    (np.float(0.1), np.float(0.1), {}, True),
-    (np.float(0.1), np.float(0.3), {'atol': 0.1}, False),
-    (np.float(0.1), np.float(0.2), {'atol': 0.1}, True),
-    (np.float(0.3), np.float(0.1), {'rtol': 1}, False),
-    (np.float(0.1), np.float(0.3), {'rtol': 1}, True),
+    (np.int64(1), np.int64(2), {}, False),
+    (np.int64(1), np.int64(1), {}, True),
+    (np.int64(1), np.int64(3), {'atol': 1}, False),
+    (np.int64(1), np.int64(2), {'atol': 1}, True),
+    (np.int64(3), np.int64(1), {'rtol': 1}, False),
+    (np.int64(1), np.int64(3), {'rtol': 1}, True),
+    (np.float64(0.1), np.float64(0.2), {}, False),
+    (np.float64(0.1), np.float64(0.1), {}, True),
+    (np.float64(0.1), np.float64(0.3), {'atol': 0.1}, False),
+    (np.float64(0.1), np.float64(0.2), {'atol': 0.1}, True),
+    (np.float64(0.3), np.float64(0.1), {'rtol': 1}, False),
+    (np.float64(0.1), np.float64(0.3), {'rtol': 1}, True),
     ((0, 1, 2), (1, 2, 3), {}, False),
     ((0, 1, 2), (0, 1, 2), {}, True),
     ((0, 1, 2), (2, 3, 4), {'atol': 1}, False),
@@ -100,18 +101,18 @@ def test_equal(a, b, kwargs, expected):
     (0.1, 0.2, {'atol': 0.1}, True),
     (0.3, 0.1, {'rtol': 1}, False),
     (0.1, 0.3, {'rtol': 1}, True),
-    (np.int(1), np.int(2), {}, False),
-    (np.int(1), np.int(1), {}, True),
-    (np.int(1), np.int(3), {'atol': 1}, False),
-    (np.int(1), np.int(2), {'atol': 1}, True),
-    (np.int(3), np.int(1), {'rtol': 1}, False),
-    (np.int(1), np.int(3), {'rtol': 1}, True),
-    (np.float(0.1), np.float(0.2), {}, False),
-    (np.float(0.1), np.float(0.1), {}, True),
-    (np.float(0.1), np.float(0.3), {'atol': 0.1}, False),
-    (np.float(0.1), np.float(0.2), {'atol': 0.1}, True),
-    (np.float(0.3), np.float(0.1), {'rtol': 1}, False),
-    (np.float(0.1), np.float(0.3), {'rtol': 1}, True),
+    (np.int64(1), np.int64(2), {}, False),
+    (np.int64(1), np.int64(1), {}, True),
+    (np.int64(1), np.int64(3), {'atol': 1}, False),
+    (np.int64(1), np.int64(2), {'atol': 1}, True),
+    (np.int64(3), np.int64(1), {'rtol': 1}, False),
+    (np.int64(1), np.int64(3), {'rtol': 1}, True),
+    (np.float64(0.1), np.float64(0.2), {}, False),
+    (np.float64(0.1), np.float64(0.1), {}, True),
+    (np.float64(0.1), np.float64(0.3), {'atol': 0.1}, False),
+    (np.float64(0.1), np.float64(0.2), {'atol': 0.1}, True),
+    (np.float64(0.3), np.float64(0.1), {'rtol': 1}, False),
+    (np.float64(0.1), np.float64(0.3), {'rtol': 1}, True),
     ((0, 1, 2), (1, 2, 3), {}, False),
     ((0, 1, 2), (0, 1, 2), {}, True),
     ((0, 1, 2), (2, 3, 4), {'atol': 1}, False),
