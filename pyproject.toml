@@ -33,7 +33,7 @@ name = "plugnparse"  # REQUIRED, is the only field that cannot be marked as dyna
 #
 # For a discussion on single-sourcing the version, see
 # https://packaging.python.org/guides/single-sourcing-package-version/
-version = "0.1.0"  # REQUIRED, although can be dynamic
+version = "0.2.0"  # REQUIRED, although can be dynamic
 
 # This is a one-line description or tagline of what your project does. This
 # corresponds to the "Summary" metadata field:
@@ -142,9 +142,9 @@ test = ["pytest", "coverage", "pyfakefs", "mock"]
 # maintainers, and where to support the project financially. The key is
 # what's used to render the link text on PyPI.
 [project.urls]
-"Homepage" = "https://github.com/DDDeSantis/plugnparse"
-"Bug Reports" = "https://github.com/DDDeSantis/plugnparse/issues"
-"Source" = "https://github.com/DDDeSantis/plugnparse"
+"Homepage" = "https://github.com/orthly/pytorch3d"
+"Bug Reports" = "https://github.com/orthly/pytorch3d"
+"Source" = "https://github.com/orthly/pytorch3d"
 
 # The following would provide a command line executable called `sample`
 # which executes the function `main` from this package when invoked.
