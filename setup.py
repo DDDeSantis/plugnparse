@@ -15,8 +15,11 @@ packages = find_packages(where='src', include=included_packages, exclude=exclude
 # --- location of packages ---
 package_dirs = {"": "src"}
 
-classifiers = ["Programming Language :: Python :: 3.11",
-               "Private :: Do Not Upload"]
+classifiers = [
+      "Programming Language :: Python :: 3.11",
+      "Private :: Do Not Upload",
+      "Typing :: Typed"
+]
 
 # --- setup the package ---
 setup(author="Dylan DeSantis",
@@ -27,6 +30,7 @@ setup(author="Dylan DeSantis",
       long_description_content_type="text/markdown",
       name="plugnparse",
       packages=packages,
+      package_data={"plugnparse": ["py.typed"]},
       package_dir=package_dirs,
       classifiers=classifiers,
       zip_safe=False)
