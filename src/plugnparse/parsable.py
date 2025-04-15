@@ -1,12 +1,15 @@
 # --- external imports ---
 from __future__ import annotations
-from typing import List, Optional, Tuple, Union, Any, Sequence, Callable
+from typing import List, Optional, Tuple, Union, Any, Sequence, Callable, TypeVar
 import numpy as np
 from pathlib import Path
 # --- local imports ---
 from . import logger, io, properties
 from .equal import equal
 
+T = TypeVar("T")
+U = TypeVar("U")
+V = TypeVar("V")
 
 class Parsable:
     """Represents a class capable of parsing attributes of its subclass implementations.
@@ -215,7 +218,7 @@ class Parsable:
     # Decorators
     ##########################################################################
     @classmethod
-    def static_class_setter(cls) -> Callable[[Union[Parsable, dict]], Parsable]:
+    def static_class_setter(cls) -> Callable[[Callable[[T,U],V]],Callable[[T,Union[U,dict]],V]]:
         """A decorator function that provides the class module and name to the module loader routine.
 
         Examples:
