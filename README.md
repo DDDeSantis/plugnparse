@@ -50,6 +50,16 @@ pip install OUTDIR/plugnparse-<verison>-py3-none-any.whl
 
 The `OUTDIR` is the directory location of the generated python wheel.
 
+#### Uploading to PyPi
+After building the packages, you will be able to upload the packages to PyPi. This requires that a new version be
+created, so any time you wish to upload a new package to PyPi you must increase the plugnparse version number. This is
+found in the pyproject.toml file.
+
+To upload the built package use the following command and enter your PyPi token when prompted.
+```shell
+twine upload dist/*
+```
+
 ## Testing
 To run the tests follow the below commands
 ```shell
