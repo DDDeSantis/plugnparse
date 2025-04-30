@@ -339,22 +339,22 @@ class Plugin(metaclass=abc.ABCMeta):
             module_name = parameters.get(plugin_module_property_name)
         else:
             # --- ensure the parameters object has a property holding the plugin class name ---
-            if not hasattr(type(parameters), plugin_property_name):
+            try:
+                # --- assign the class name from the parameters ---
+                class_name = getattr(parameters, plugin_property_name)
+            except:
                 logger.log_and_raise(RuntimeError, "Unable to extract plugin property name [",
                                      plugin_property_name, "] from parameters object [", type(parameters),
                                      "]. Unable to generate Plugin!")
 
-            # --- assign the class name from the parameters ---
-            class_name = getattr(parameters, plugin_property_name)
-
             # --- ensure the parameters object has a property holding the plugin module name ---
-            if not hasattr(type(parameters), plugin_module_property_name):
+            try:
+                # --- assign the module name from the parameters ---
+                module_name = getattr(parameters, plugin_module_property_name)
+            except:
                 logger.log_and_raise(RuntimeError, "Unable to extract plugin property name [",
                                      plugin_module_property_name, "] from parameters object [", type(parameters),
                                      "]. Unable to generate Plugin!")
-
-            # --- assign the module name from the parameters ---
-            module_name = getattr(parameters, plugin_module_property_name)
 
         return class_name, module_name
 
