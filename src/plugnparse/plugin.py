@@ -343,18 +343,26 @@ class Plugin(metaclass=abc.ABCMeta):
                 # --- assign the class name from the parameters ---
                 class_name = getattr(parameters, plugin_property_name)
             except:
-                logger.log_and_raise(RuntimeError, "Unable to extract plugin property name [",
-                                     plugin_property_name, "] from parameters object [", type(parameters),
-                                     "]. Unable to generate Plugin!")
+                if hasattr(parameters, "parameterized_type"):
+                    # --- assign the class name from the parameterized type ---
+                    class_name = parameters.parameterized_type
+                else:
+                    logger.log_and_raise(RuntimeError, "Unable to extract plugin property name [",
+                                         plugin_property_name, "] from parameters object [", type(parameters),
+                                         "]. Unable to generate Plugin!")
 
             # --- ensure the parameters object has a property holding the plugin module name ---
             try:
                 # --- assign the module name from the parameters ---
                 module_name = getattr(parameters, plugin_module_property_name)
             except:
-                logger.log_and_raise(RuntimeError, "Unable to extract plugin property name [",
-                                     plugin_module_property_name, "] from parameters object [", type(parameters),
-                                     "]. Unable to generate Plugin!")
+                if hasattr(parameters, "parameterized_module"):
+                    # --- assign the class name from the parameterized module ---
+                    module_name = parameters.parameterized_module
+                else:
+                    logger.log_and_raise(RuntimeError, "Unable to extract plugin property name [",
+                                         plugin_module_property_name, "] from parameters object [", type(parameters),
+                                         "]. Unable to generate Plugin!")
 
         return class_name, module_name
 
